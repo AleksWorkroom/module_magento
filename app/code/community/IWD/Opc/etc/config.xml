@@ -2,7 +2,7 @@
 <config>
 	<modules>
         <IWD_Opc>
-            <version>0.1.0</version>
+            <version>4.3.0</version>
         </IWD_Opc>
 	</modules>
 
@@ -27,7 +27,13 @@
             </updates>
         </layout>
 
-        <menu><opc module="opc"><title>Города доставки</title><sort_order>77</sort_order><action>opc_admin/adminhtml_cities</action></opc></menu>
+        <menu>
+            <opc module="opc" translate="title">
+                <title>Shipping cities</title>
+                <sort_order>77</sort_order>
+                <action>opc_admin/adminhtml_cities</action>
+            </opc>
+        </menu>
 	</adminhtml>
 	
 	<frontend>

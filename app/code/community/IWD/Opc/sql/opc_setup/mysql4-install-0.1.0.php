@@ -20,9 +20,10 @@ CREATE TABLE IF NOT EXISTS `{$installer->getTable('opc/customer')}`(
 ");
 
 $installer->run("CREATE TABLE IF NOT EXISTS " . $tableCat . "(
-        `city_id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+        `city_id` INT(11) NOT NULL AUTO_INCREMENT,
         `city_name` VARCHAR(255) NOT NULL,
         `price` VARCHAR(255) NOT NULL,
+        `postal_code` INT(10) NOT NULL,
 
         PRIMARY KEY (`city_id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;");

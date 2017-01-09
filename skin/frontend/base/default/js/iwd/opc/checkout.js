@@ -62,12 +62,12 @@ IWD.OPC = {
                 return;
             }
 
-            // if (!$j_opc('input[name="billing[use_for_shipping]"]').prop('checked')) {
-            //     var addressForm = new VarienForm('opc-address-form-shipping');
-            //     if (!addressForm.validator.validate()) {
-            //         return;
-            //     }
-            // }
+            if (!$j_opc('input[name="billing[use_for_shipping]"]').prop('checked')) {
+                var addressForm = new VarienForm('opc-address-form-shipping');
+                if (!addressForm.validator.validate()) {
+                    return;
+                }
+            }
 
             // check if LIPP enabled
             if (typeof(IWD.LIPP) != 'undefined' && IWD.LIPP != undefined && IWD.LIPP != '' && IWD.LIPP) {
@@ -361,7 +361,7 @@ IWD.OPC = {
         IWD.OPC.getSubscribe();
 
         if (typeof(response.review) != "undefined") {
-           // IWD.OPC.Decorator.updateGrandTotal(response);
+            IWD.OPC.Decorator.updateGrandTotal(response);
             $j_opc('#opc-review-block').html(response.review);
             IWD.OPC.Checkout.removePrice();
 
@@ -1262,11 +1262,6 @@ IWD.OPC.Shipping = {
                 IWD.OPC.Shipping.validateForm();
         });
 
-        $j_opc('#opc-address-form-shipping select').blur(function () {
-            if (IWD.OPC.Shipping.ship_need_update)
-                IWD.OPC.Shipping.validateForm();
-        });
-
         $j_opc('#opc-address-form-shipping').mouseleave(function () {
             if (IWD.OPC.Shipping.ship_need_update)
                 IWD.OPC.Shipping.validateForm();
@@ -1876,9 +1871,8 @@ RegionUpdater.prototype = {
         this.disableAction = (typeof disableAction == 'undefined') ? 'hide' : disableAction;
         this.zipOptions = (typeof zipOptions == 'undefined') ? false : zipOptions;
 
-        if (this.regionSelectEl.options.length <= 1) {
-            this.update();
-        }
+        this.update();
+
 
         Event.observe(this.countryEl, 'change', this.update.bind(this));
     },
@@ -2110,3 +2104,12 @@ ZipUpdater.prototype = {
         }
     }
 }
+
+jQuery( document ).ready(function() {
+    jQuery('.shipping_city').on('change', function () {
+        var value = this.value;
+        value = value.split('|')
+        jQuery('.shipping_postcode').val(value[1]);
+        IWD.OPC.Checkout.reloadShippingsPayments('shipping');
+    });
+});

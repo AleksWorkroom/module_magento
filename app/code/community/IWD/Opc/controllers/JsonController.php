@@ -249,12 +249,11 @@ class IWD_Opc_JsonController extends Mage_Core_Controller_Front_Action{
             $data['street'] = array($data['messenger_type'].':'.$data['messenger_input'],'_');
             $data['city'] = '_';
             $data['country_id'] = 'UA';
-            $data['use_for_shipping'] = 1;
             $data['region'] = '_';
             $data['region_id'] = '';
             $data['company']='';
             $data['fax']='';
-            $data['save_in_address_book'] = 0;
+            $data['save_in_address_book'] = 1;
 
             // get grand totals before
             $totals_before = $this->_getSession()->getQuote()->getGrandTotal();
@@ -271,31 +270,16 @@ class IWD_Opc_JsonController extends Mage_Core_Controller_Front_Action{
                     $result['isVirtual'] = true;
                 };
 
-                $city = explode('|',$data['recipient_city']);
                 //load shipping methods block if shipping as billing;
                 $data = $this->getRequest()->getPost('billing', array());
 
-                $data['firstname'] = $data['recipient_name'];
-                $data['lastname'] = '_';
-                $data['email'] = 'no@email.here';
-                $data['telephone'] = $data['recipient_telephone'];
                 if (!isset($data['delivery_time']))
                 {
                     $data['delivery_time'] = ' ';
                 }
-                $data['street']= array($city[0],$data['recipient_adress'] . ' ('.
-                $data['delivery_date'].' - '.$data['delivery_time'].') '
-                );
+
                 $data['save_in_address_book'] = 0;
 
-
-                $data['postcode'] = '_';
-                $data['city'] = 'Дополнительная информация: '.$data['additional_information'];
-                $data['country_id'] = 'UA';
-                $data['region'] = '';
-                $data['region_id'] = '';
-                $data['company']='Поздравить '.$data['greeting_method']. ' Текст: ' .$data['greeting_text'];
-                $data['fax']='';
                 $this->getOnepage()->saveShipping($data, $customerAddressId);
 
                 Mage::dispatchEvent('opc_saveGiftMessage', array(
@@ -328,12 +312,8 @@ class IWD_Opc_JsonController extends Mage_Core_Controller_Front_Action{
                 }
                 /////
 
-                $total = $this->_getSession()->getQuote()->getGrandTotal();
-                $total += $city[1];
-                $this->getOnepage()->getQuote()->setGrandTotal($total);
                 // get grand totals after
                 $totals_after = $this->_getSession()->getQuote()->getGrandTotal();
-                $result['grandTotal'] = $total;
 
                 $this->getOnepage()->getQuote()->collectTotals()->save();
 
@@ -369,6 +349,14 @@ class IWD_Opc_JsonController extends Mage_Core_Controller_Front_Action{
             $totals_before = $this->_getSession()->getQuote()->getGrandTotal();
 
             $data = $this->getRequest()->getPost('shipping', array());
+            $data['street'][] = $this->__('Greeting method : ').$data['greeting_method'].$this->__('Greeting text : ').$data['greeting_text'];
+            $data['street'][0] .= ' '.$data['2017-01-16']. ' - ('.$data['delivery_time'].') '.$this->__('Additional information : ').$data['additional_information'];
+
+            $data['country_id'] = 'UA';
+            $data['company']='';
+            $data['fax']='';
+            $data['save_in_address_book'] = 0;
+
             $customerAddressId = $this->getRequest()->getPost('shipping_address_id', false);
             $result = $this->getOnepage()->saveShipping($data, $customerAddressId);
 
@@ -584,7 +572,7 @@ class IWD_Opc_JsonController extends Mage_Core_Controller_Front_Action{
         }
         $responseData = array();
         $responseData['review'] = $this->_getReviewHtml();
-       // $responseData['grandTotal'] = Mage::helper('opc')->getGrandTotal();
+        $responseData['grandTotal'] = Mage::helper('opc')->getGrandTotal();
         $this->getResponse()->setHeader('Content-type','application/json', true);
         $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($responseData));
     }

@@ -32,6 +32,12 @@ class IWD_Opc_Block_Adminhtml_Cities_Edit_Form extends Mage_Adminhtml_Block_Widg
             'name' => 'price',
         ));
 
+        $fieldset->addField('postal_code', 'text', array(
+            'label' => $helper->__('Postal code'),
+            'required' => true,
+            'name' => 'postal_code',
+        ));
+
 
         $formData = $model->getData();
         $form->setValues($formData);

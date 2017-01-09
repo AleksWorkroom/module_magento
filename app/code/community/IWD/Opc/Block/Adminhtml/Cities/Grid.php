@@ -31,6 +31,11 @@ class IWD_Opc_Block_Adminhtml_Cities_Grid extends Mage_Adminhtml_Block_Widget_Gr
             'type' => 'text',
         ));
 
+        $this->addColumn('postal_code', array(
+            'header' => $helper->__('Postal code'),
+            'index' => 'postal_code',
+            'type' => 'text',
+        ));
 
         return parent::_prepareColumns();
     }
